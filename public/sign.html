@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="tailwind.css">
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/8.4.3/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.4.3/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.4.3/firebase-database.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+</head>
+<body>
+    <nav class="flex items-center justify-between flex-wrap bg-gradient-to-r from-indigo-500 to-blue-400 p-6">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+          <svg class="fill-current h-8 w-8 mr-2" width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z"/></svg>
+          <span class="font-semibold text-xl tracking-tight">TLEarn</span>
+        </div>
+        <div class="block lg:hidden">
+          <button class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
+            <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+          </button>
+        </div>
+        <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto text-xl">
+          <div class="lg:flex-grow">
+            <a href="courses.html" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400 mr-4">
+                Курсы
+            </a>
+            <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400 mr-4">
+                Отзывы
+            </a>
+            <a href="sendCourse.html" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400">
+                Создать курс
+            </a>
+          </div>
+          <div>
+            <a href="sign.html" id="sign" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-600">
+                Войти
+            </a>
+          </div>
+        </div>
+      </nav>
+
+    <p id='paste'>Status current</p>
+    <div class="text-xl">
+        <form id="signin-form" class="items-center flex flex-col">
+            <p class="text-4xl">Вход</p>
+            <input type="text" id="email" placeholder="Электронная почта" class="mt-4 rounded-lg bg-gray-200 py-3 px-6">
+            <input type="text" id="password" placeholder="Пароль" class="mt-4 rounded-lg bg-gray-200 py-3 px-6">
+            <button class="mt-6 text-white bg-red-500 rounded-full py-3 px-20 focus:outline-none hover:bg-red-600">Войти</button>
+            <p class="mt-4 text-sm">Ещё нет аккаунта? <a class="text-blue-500" href="#signUpTrue" onclick="signUp()">Зарегистрироваться</a></p>
+        </form>
+        <form id="signup-form" class="items-center flex flex-col invisible">
+            <p class="text-4xl">Регистрация</p>
+            <input type="text" id="username" placeholder="Псевдоним" class="mt-6 rounded-lg bg-gray-200 py-3 px-6">
+            <input type="text" id="email" placeholder="Электронная почта" class="mt-4 rounded-lg bg-gray-200 py-3 px-6">
+            <input type="text" id="password" placeholder="Пароль" class="mt-4 rounded-lg bg-gray-200 py-3 px-6">
+            <input type="text" id="confirmPassword" placeholder="Подтвердите пароль" class="mt-4 rounded-lg bg-gray-200 py-3 px-6">
+            <button class="mt-6 text-white bg-red-500 rounded-full py-3 px-6 focus:outline-none hover:bg-red-600">Зарегистрироваться</button>
+            <p class="mt-4 text-sm">Есть аккаунт? <a class="text-blue-500" href="#signInTrue" onclick="signIn()">Войти</a></p>
+        </form>
+    </div>
+
+    <script>
+        const paste = document.getElementById("paste");
+        const signupForm = document.querySelector("#signup-form");
+        const signinForm = document.querySelector("#signin-form");
+        function signIn(){
+            signinForm.classList.remove("invisible")
+            signupForm.classList.add("invisible")
+            signupForm.style.display = "none";
+            signinForm.style.display = "flex";
+        }
+        function signUp(){
+            signupForm.classList.remove("invisible")
+            signinForm.classList.add("invisible")
+            signinForm.style.display = "none";
+            signupForm.style.display = "flex";
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                firebase.auth().onAuthStateChanged(function(user) {
+                    if (user) {
+                        console.log("User signed in");
+                        document.location.href = "https://tlearn-2fdd0.web.app";
+                        
+                    } else {
+                        console.log("User not signed in");
+                        // No user is signed in.
+                    }
+                });
+                if (localStorage) { // fix for API
+                    localStorage.removeItem("firebase:previous_websocket_failure");
+                }
+                paste.textContent = "DOM Loaded";
+                console.log("DOM loaded");
+                firebase.database().ref("state").once('value', snapshot => {
+                    if(snapshot.exists()){
+                        console.log("Data received"); 
+                        const data = snapshot.val();
+                        paste.textContent = data;
+                        signupForm.addEventListener('submit', (e) => {
+                            e.preventDefault();
+                            const email = signupForm['email'].value;
+                            const password = signupForm['password'].value;
+                            const confirmPassword = signupForm['confirmPassword'].value;
+                            if(password === confirmPassword){
+                                firebase.auth().createUserWithEmailAndPassword(email, password)
+                                .then((userData) => {
+                                    // Signed in 
+                                    var user = userData.user;
+                                    user.updateProfile({
+                                        displayName: document.querySelector('#username').value
+                                    }).then(() => {
+                                        document.location.href = "https://tlearn-2fdd0.web.app";
+                                    });
+                                    
+                                    // ...
+                                })
+                                .catch((error) => {
+                                    var errorCode = error.code;
+                                    var errorMessage = error.message;
+                                    // ..
+                                });
+                            }
+                        });
+                        signinForm.addEventListener('submit', (e) => {
+                            e.preventDefault();
+                            const email = signinForm['email'].value;
+                            const password = signinForm['password'].value;
+                            firebase.auth().signInWithEmailAndPassword(email, password)
+                            .then((userData) => {
+                                // Signed in
+                                var user = userData.user;
+                                document.location.href = "https://tlearn-2fdd0.web.app";
+                                // ...
+                            })
+                            .catch((error) => {
+                                var errorCode = error.code;
+                                var errorMessage = error.message;
+                            });
+                        });
+                    } else {
+                        paste.textContent = "Snapshot isn't exist"
+                    }
+                    
+                });
+            } catch (e) {
+                console.error(e);
+                paste.textContent = 'Error loading the Firebase SDK, check the console.';
+            }
+        });
+    </script>
+</body>
+</html>

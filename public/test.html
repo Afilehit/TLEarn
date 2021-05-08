@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /*QuickReset*/
+
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%
+}
+
+body {
+  min-height: 100%;
+  font: 14px/1.4 sans-serif;
+}
+
+.grid-3 {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.thumb {
+  display: flex;
+  flex-flow: column nowrap;
+  position: relative;
+  overflow: hidden;
+  width: 33.333%;
+  color: #fff;
+}
+
+.thumb-gradient,
+.thumb-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumb-gradient {
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.24) 0%, rgba(0, 0, 0, 0.56) 100%);
+}
+
+.thumb-anim {
+  margin-top: auto;  /* pushes all content to bottom */
+  position: relative;
+  transition: 0.5s;
+  transform: translateY(100%);
+}
+
+.thumb-title {
+  text-transform: uppercase;
+  padding: 20px;
+  transition: 0.5s;
+  transform: translateY(-100%);
+}
+
+.thumb-description {
+  padding: 10px 20px;
+  transition: 0.5s;
+  opacity: 0;
+  flex: 1;
+}
+
+.thumb-author {
+  padding: 20px;
+  position: relative;
+}
+
+
+/* ANIMATE */
+
+.thumb:hover .thumb-anim {
+  transform: translateY(0);
+}
+
+.thumb:hover .thumb-title {
+  transform: translateY(0%);
+}
+
+.thumb:hover .thumb-description {
+  opacity: 1;
+}
+    </style>
+</head>
+<body>
+    <div class="thumb">
+        <img class="thumb-img" src="http://placekitten.com/230/300" alt="Catz!">
+        <div class="thumb-gradient"></div>
+        <div class="thumb-anim">
+          <h3 class="thumb-title">The movie title a super long title here</h3>
+          <p class="thumb-description">
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Repellendus facilis beatae, numquam aliquam eveniet. Iure porro provident itaque hic quae tempora. Quaerat doloribus dolore facilis similique, soluta asperiores quas sapiente.
+          </p>
+        </div>
+        <div class="thumb-author">Published by super long some Author</div>
+      </div>
+</body>
+</html>
+
+<div class="p-3">
+    <input type="text" class="text-4xl p-1 rounded-lg w-full" placeholder="Заголовок">
+</div>
+<div class="p-3">
+    <textarea rows="25" class="block rounded-md border-2 p-1 w-full" placeholder="Напишите описание" style="resize: none;"></textarea>
+</div>
+<div class="p-3">
+    <img src="none.jpg" class="max-w-screen-md ml-auto mr-auto">
+    <input type="file" accept="image/*" value="upload" class="w-full">
+</div> 
+
+<a href="course.html?id=1" id="course_link" data="thisIsCourseId">
+    <div class="course overflow-hidden relative text-center bg-gray-200 h-80 lg:h-80 md:h-60 sm:h-70 bg-cover bg-no-repeat bg-center rounded-lg" style="background-image: url('https://static.skillshare.com/cdn-cgi/image/width=448,quality=85,format=auto/uploads/video/thumbnails/2d1ebc7a28476cc5d19077725e467eee/original ');">
+        <div class="bg-black bg-opacity-70 rounded-t-lg">
+            <p class="text-2xl text-white text-primary p-1">Заголовок</p>
+        </div>
+        <div class="description-course bg-black h-60 lg:h-60 lg:max-h-60 md:h-40 md:max-h-40 sm:h-60 sm:max-h-60 md:text-sm lg:text-md relative mt-auto">
+            <p class="text-left text-white">Объектно-ориентированное программирование (C++) Объектно-ориентированное программирование (C++) Объектно-ориентированное программирование (C++) Объектно-ориентированное программирование (C++) Объектно-ориентированное программирование (C++)</p>
+        </div>
+        <div class="absolute inset-x-0 bottom-0 bg-black bg-opacity-70 rounded-b-lg h-10">
+            <p class="text-xl text-white text-left ml-4 mt-1">14400 руб.</p>
+        </div>
+    </div>
+</a>

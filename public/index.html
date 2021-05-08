@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLearn</title>
+    <link rel="stylesheet" href="tailwind.css">
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/8.4.3/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.4.3/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.4.3/firebase-database.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+</head>
+<body>
+  <div class="relative bg-gradient-to-t from-blue-500 to-purple-900 h-screen">
+    <nav class="mb-6 flex items-center justify-between flex-wrap p-6">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+          <svg class="fill-current h-8 w-8 mr-2" width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z"/></svg>
+          <span class="font-semibold text-xl tracking-tight">TLearn</span>
+        </div>
+        <div class="block lg:hidden">
+          <button class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
+            <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+          </button>
+        </div>
+        <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto text-xl">
+          <div class="lg:flex-grow">
+            <a href="courses.html" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400 mr-4">
+              Курсы
+            </a>
+            <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400 mr-4">
+              Цены
+            </a>
+            <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400">
+              Отзывы
+            </a>
+          </div>
+          <div>
+            <a href="sign.html" id="sign" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-600">
+                Войти
+            </a>
+          </div>
+        </div>
+      </nav>
+
+    <div class="grid grid-cols-3 gap-4 w-full h-1/4">
+      <div></div>
+      <div class="bg-no-repeat grid grid-rows-3 bg-contain" style="background-image: url('images/book.png')">
+        <img src="images/tlearn.png" class="ml-auto mr-auto transform translate-y-28" alt="header">
+        <div class="self-center text-center">
+          
+          <a href="courses.html" class=""><button class="border-2 border-black mb-4 w-1/2 px-3 btn outline-none focus:outline-none rounded-full bg-pink-600 hover:bg-pink-800 h-10 text-white inline-flex items-center justify-center"><img src="images/goBtn.png" class="inline-block align-middle w-6 mr-2"><p class="inline-block align-middle">ПЕРЕЙТИ К КУРСАМ</p></button></a>
+          <a href="sendCourse.html" class=""><button class="border-2 border-black w-2/3 px-3 btn outline-none focus:outline-none rounded-full bg-pink-600 hover:bg-pink-800 h-10 text-white inline-flex items-center justify-center"><img src="images/createBtn.png" class="inline-block align-middle w-6 mr-2"><p class="inline-block align-middle">СОЗДАТЬ СОБСТВЕННЫЙ КУРС</p></button></a>
+        </div>
+        
+      </div>
+      <div></div>
+    </div>
+  </div>
+  <div class="w-full h-screen">
+
+  </div>
+    <script>
+      const sign = document.querySelector("#sign");
+      document.addEventListener('DOMContentLoaded', function() {
+        try {
+          firebase.auth().onAuthStateChanged(function(user) {
+
+          if (user) {
+            console.log("User signed in");
+            sign.textContent = user.displayName;
+            sign.href = "profile.html";
+          } else {
+            console.log("User not signed in");
+            // No user is signed in.
+          }
+          });
+        } catch (e) {
+          console.error(e);
+          sign.textContent = 'Error loading the Firebase SDK, check the console.';
+          
+        }
+      });
+    </script>
+</body>
+</html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLEarn</title>
+    <link rel="stylesheet" href="tailwind.css">
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/8.4.3/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.4.3/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.4.3/firebase-database.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+    <style>
+        .description-course{
+            background-color:rgba(0, 0, 0, 0.5);
+            transition: 0.25s;
+            transform: translateY(100%);
+            padding: 0.5em;
+            opacity: 0;
+        }
+        .course:hover .description-course {
+            transform: translateY(0%);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <nav class="flex items-center justify-between flex-wrap bg-gradient-to-r from-indigo-500 to-blue-400 p-6">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+          <svg class="fill-current h-8 w-8 mr-2" width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z"/></svg>
+          <span class="font-semibold text-xl tracking-tight">TLEarn</span>
+        </div>
+        <div class="block lg:hidden">
+          <button class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
+            <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+          </button>
+        </div>
+        <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto text-xl">
+          <div class="lg:flex-grow">
+            <a href="courses.html" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400 mr-4">
+                Курсы
+            </a>
+            <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400 mr-4">
+                Отзывы
+            </a>
+            <a href="sendCourse.html" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400">
+                Создать курс
+            </a>
+          </div>
+          <div>
+            <a href="sign.html" id="sign" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-600">
+                Войти
+            </a>
+          </div>
+        </div>
+      </nav>
+    <div class="content p-3 mt-3">
+        <div class="fixme flex flex-wrap gap-2 justify-center w-full p-3 bg-gray-200 rounded-lg">
+            
+        </div>
+        <div id="stepWindows" class="block mt-40 bg-gray-200 p-3">
+        </div>
+    <script>
+        var id;
+        function keep169(){
+            if(document.querySelectorAll('.video_iframe').length != 0){
+                var newHeight_video = document.querySelector('.fixme').offsetWidth / 1.77777;
+                console.log(newHeight_video);
+                $('.video_iframe').css({
+                    height: newHeight_video
+                })
+            }
+
+        }
+        var fixmeTop = $('.fixme').offset().top;
+        $(window).scroll(function() {
+            var currentScroll = $(window).scrollTop();
+            if (currentScroll >= fixmeTop) {
+                $('.fixme').css({
+                    position: 'fixed',
+                    top: '0',
+                    left: '0'
+                });
+            } else {
+                $('.fixme').css({
+                    position: 'static'
+                });
+            }
+        });
+
+        $( window ).resize(function() {
+            keep169();
+        });
+    </script>
+    <script>
+        const fixMe = document.querySelector(".fixme");
+        const stepWindows = document.querySelector("#stepWindows");
+        var lastActiveWindow;
+        var lastActiveBtn;
+        var path;
+        function switchStep(btn){
+            id = btn.textContent;
+            changeActiveWindow(stepWindows.children[id-1]);
+            console.log(id);
+            lastActiveBtn.disabled = false;
+            lastActiveBtn.style.opacity = 1;
+            btn.disabled = true;
+            btn.style.opacity = 0.5;
+            lastActiveBtn = btn;
+            keep169();
+        }
+        function changeActiveWindow(window){
+            lastActiveWindow.classList.add("hidden");
+            window.classList.remove("hidden");
+            lastActiveWindow = window;
+        }
+        function calcIndex(elem){
+            for(var i = 1; i < elem.childElementCount+1; i++){
+                elem.children[i-1].textContent = i;
+            }
+        }
+        function addStep(){
+            var btnStep = document.createElement('button');
+            btnStep.addEventListener('click', function(e) {
+                switchStep(e.target);
+            });
+            var divWindow = document.createElement('div');
+            btnStep.classList.add("btn", "outline-none", "focus:outline-none", "rounded-full", "bg-indigo-600", "hover:bg-indigo-800", "h-10", "w-10", "text-white");
+            divWindow.classList.add("window", "hidden");
+            fixMe.appendChild(btnStep);
+            stepWindows.appendChild(divWindow);
+            calcIndex(fixMe);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var url_string = window.location.href; //window.location.href
+                var url = new URL(url_string);
+                const course_id = url.searchParams.get("id");
+                
+                console.log(course_id);
+                firebase.database().ref("courses").child(course_id).child("content").once('value', snapshot => {
+                    var obj = snapshot.val()
+                    console.log(obj)
+                    if(snapshot.exists()){
+                        for(var window in obj){
+                            addStep();
+                        }
+                        lastActiveWindow = stepWindows.children[0];
+                        lastActiveBtn = fixMe.children[0];
+
+                        for(var window in obj){
+                            console.log(obj[window].index)
+                            var needWindow = stepWindows.children[obj[window].index];
+                            var sortable = [];
+                            for (var elem in obj[window]) {
+                                sortable.push([obj[window][elem], obj[window][elem].index]);
+                            }
+                            sortable.sort(function(a, b) {
+                                return a[1] - b[1];
+                            });
+                            console.log(sortable)
+                            console.log(needWindow)
+                            sortable.forEach(element => {
+                                if(element[0].element == "header_elem"){
+                                    var div_header = document.createElement('div');
+                                    div_header.classList.add("p-3");
+                                    needWindow.appendChild(div_header)
+                                    var p_header = document.createElement('p');
+                                    p_header.textContent = element[0].elemValue;
+                                    p_header.classList.add("text-4xl", "p-1", "rounded-lg", "w-full");
+                                    p_header.name = "header_elem"
+                                    div_header.appendChild(p_header);
+                                }
+                                if(element[0].element == "description_elem"){
+                                    var div_description = document.createElement('div');
+                                    div_description.classList.add("p-3");
+                                    needWindow.appendChild(div_description)
+                                    var p_description = document.createElement('p');
+                                    p_description.textContent = element[0].elemValue;
+                                    p_description.classList.add("block", "rounded-md", "border-2", "p-1", "w-full");
+                                    p_description.name = "description_elem";
+                                    div_description.appendChild(p_description);
+                                }
+                                if(element[0].element == "image_elem"){
+                                    var div_img = document.createElement('div');
+                                    div_img.classList.add("p-3");
+                                    needWindow.appendChild(div_img)
+                                    var CourseImage = document.createElement('img');
+                                    CourseImage.src = "none.jpg";
+                                    CourseImage.name = "image_elem";
+                                    CourseImage.src = element[0].elemValue;
+                                    
+                                    CourseImage.classList.add("courseimg","max-w-screen-md", "ml-auto", "mr-auto")
+                                    
+                                    div_img.appendChild(CourseImage);
+                                }
+                                if(element[0].element == "video_elem"){
+                                    
+                                    var div_video = document.createElement('div');
+                                    div_video.classList.add("p-3");
+                                    needWindow.appendChild(div_video)
+                                    var iframe_video = document.createElement('iframe');
+                                    div_video.appendChild(iframe_video);
+                                    iframe_video.src = element[0].elemValue;
+                                    iframe_video.classList.add("video_iframe", "w-full", "h-96");
+                                    iframe_video.name = "video_elem";
+                                    iframe_video.border = 0;
+                                    iframe_video.allow = "accelerometer autoplay clipboard-write encrypted-media gyroscope picture-in-picture";
+                                    iframe_video.allowFullscreen = true;
+                                    
+                                }
+                            });
+                        }
+                        console.log(document.querySelectorAll('.video_iframe').length + " videos")
+                    }
+                });
+
+            firebase.auth().onAuthStateChanged(function(user) {
+
+                if (user) {
+                    console.log("User signed in");
+                } else {
+                    console.log("User not signed in");
+                    // No user is signed in.
+                }
+            });
+            } catch (e) {
+            console.error(e);
+            sign.textContent = 'Error loading the Firebase SDK, check the console.';
+            }
+        });
+    </script>
+</body>
+</html>
+
+<script>
+    
+</script>

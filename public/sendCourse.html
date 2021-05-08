@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создать курс</title>
+    <link rel="stylesheet" href="tailwind.css">
+
+    <script src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/8.4.3/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.4.3/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.4.3/firebase-database.js"></script>
+    <script defer src="/__/firebase/8.4.3/firebase-storage.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+
+    <style>
+    </style>
+</head>
+<body>
+    <nav class="flex items-center justify-between flex-wrap bg-gradient-to-r from-indigo-500 to-blue-400 p-6">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+          <svg class="fill-current h-8 w-8 mr-2" width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z"/></svg>
+          <span class="font-semibold text-xl tracking-tight">TLEarn</span>
+        </div>
+        <div class="block lg:hidden">
+          <button class="flex items-center px-3 py-2 border rounded text-white border-teal-400 hover:text-black hover:border-white">
+            <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+          </button>
+        </div>
+        <div class="hidden w-full block flex-grow lg:flex lg:items-center lg:w-auto text-xl">
+          <div class="lg:flex-grow">
+            <a href="courses.html" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400 mr-4">
+              Курсы
+            </a>
+            <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400 mr-4">
+              Отзывы
+            </a>
+            <a href="sendCourse.html" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400">
+                Создать курс
+            </a>
+          </div>
+          <div>
+            <a href="sign.html" id="sign" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-600">
+                Войти
+            </a>
+          </div>
+        </div>
+      </nav>
+    <div class="content p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 flex lg:flex-grow">
+            
+            <div id="divUpload" class="w-full">
+                <p id="pStatus" class="text-4xl mb-8">Заявка на создание курса</p>
+                <div class="md:flex mb-8">
+                    <div class="place-items-center">
+                        <img src="none.jpg" id="output" class="w-60 border-4">
+                        <p class="text-2xl mt-1 mb-2">Обложка курса</p>
+                        <input type="file" accept="image/*" value="upload" id="fileButton" onchange="loadFile()" class="w-60">
+                    </div>
+                    <div class="sm:ml-4 block mt-4 lg:mt-0">
+                        <p class="text-3xl mb-4">Заголовок</p>
+                        <input type="text" id="Iheader" class="mb-4 rounded-md py-1 px-1 w-80 border-2" placeholder="Впишите заголовок">
+                        <p class="text-2xl mb-4">Описание</p>
+                        <textarea name="Text1" id="TADesc" cols="80" rows="15" class="block rounded-md border-2 p-1 w-full" placeholder="Напишите описание" style="resize: none;"></textarea>
+                    </div>
+                    <div class="sm:ml-4 block mt-4 lg:mt-0">
+                        <p class="text-3xl mb-4 mt-4 sm:mt-0">Цена</p>
+                        <input type="number" id="price" class="mb-4 rounded-md py-1 px-1 w-80 border-2" placeholder="Впишите цену курса в рублях">
+                        <p class="block text-xl mt-2 mb-2">Категория</p>
+                        <select id="category" class="text-sm w-full rounded-lg px-1 py-1 bg-gray-200">
+                            <option>Компьютерная графика</option>
+                            <option>Web-программирование</option>
+                            <option>Объектно-ориентированное программирование (C++)</option>
+                            <option>Машинное обучение - Data Science</option>
+                        </select>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <hr>
+        <br>
+        <div class="spanner h-30 hidden"></div>
+        <div class="fixme flex flex-wrap gap-2 justify-center w-full p-3 bg-gray-200 rounded-lg">
+            
+            <button onclick="addStep()" class="btn outline-none focus:outline-none rounded-full bg-green-600 hover:bg-green-800 h-10 w-10 text-white">+</button>
+            <button onclick="removeStep()" class="btn outline-none focus:outline-none rounded-full bg-red-600 hover:bg-red-800 h-10 w-10 text-white">-</button>
+            
+            <button onclick="switchStep(this)" class="btn outline-none focus:outline-none rounded-full bg-indigo-600 hover:bg-indigo-800 h-10 w-10 text-white">1</button>
+        </div>
+        <div id="stepWindows" class="block mt-4 mb-4 bg-gray-200 grid grid-cols-1">
+            <div class="window">
+
+            </div>
+        </div>
+        
+
+        <script>
+            var fixmeTop = $('.fixme').offset().top;
+            $(window).scroll(function() {
+                var currentScroll = $(window).scrollTop();
+                if (currentScroll >= fixmeTop) {
+                    $('.fixme').css({
+                        position: 'fixed',
+                        top: '0',
+                        left: '0'
+                    });
+                    $('.spanner').css({
+                        display: 'block'
+                    })
+                } else {
+                    $('.fixme').css({
+                        position: 'static'
+                    });
+                    $('.spanner').css({
+                        display: 'hidden'
+                    })
+                }
+            });
+        </script>
+        
+
+
+    </div>
+    <div class="text-xs md:text-lg grid grid-cols-3 gap-4 fixed w-full bottom-0 bg-gray-200 md:bg-transparent p-2">
+        <select id="selElem" class="text-sm w-full rounded-lg px-1 py-1 border-2 outline-none focus:outline-none">
+            <option>Заголовок</option>
+            <option>Описание</option>
+            <option>Изображение</option>
+            <option>Видео</option>
+        </select>
+        <button onclick="addElem()" class="btn outline-none focus:outline-none rounded-full bg-green-600 hover:bg-green-800 h-10 w-full text-white">Добавить</button>
+    
+    <button id="sendCourse" class="w-full btn outline-none focus:outline-none rounded-full h-10 text-white bg-gradient-to-r from-green-400 to-blue-600 hover:from-green-500 hover:to-blue-700">
+        Отправить заявку
+    </button>
+    </div>
+    <script>
+        
+        const fixMe = document.querySelector(".fixme");
+        const stepWindows = document.querySelector("#stepWindows");
+        var lastActiveWindow = stepWindows.children[0];
+        var lastActiveBtn = fixMe.children[2];
+        var id = 1;
+        lastActiveBtn.disabled = true;
+        lastActiveBtn.style.opacity = 0.5;
+        function changeActiveWindow(window){
+            lastActiveWindow.classList.add("hidden");
+            window.classList.remove("hidden");
+            lastActiveWindow = window;
+        }
+        function calcIndex(elem){
+            for(var i = 1; i < elem.childElementCount - 1; i++){
+                elem.children[i+1].textContent = i;
+            }
+        }
+        calcIndex(fixMe);
+        function addStep(){
+            var btnStep = document.createElement('button');
+            btnStep.addEventListener('click', function(e) {
+                switchStep(e.target);
+            });
+            var divWindow = document.createElement('div');
+            btnStep.classList.add("btn", "outline-none", "focus:outline-none", "rounded-full", "bg-indigo-600", "hover:bg-indigo-800", "h-10", "w-10", "text-white");
+            divWindow.classList.add("window", "hidden");
+            fixMe.appendChild(btnStep);
+            stepWindows.appendChild(divWindow);
+            calcIndex(fixMe);
+        }
+        function removeStep(){
+            if(id != 1){
+                lastActiveWindow.remove();
+                lastActiveBtn.remove();
+                id -= 1;
+                var window = stepWindows.children[id-1];
+                window.classList.remove("hidden");
+                lastActiveWindow = window;
+                var btn = fixMe.children[id+1];
+                btn.disabled = true;
+                btn.style.opacity = 0.5;
+                lastActiveBtn = btn;
+                calcIndex(fixMe);
+            }
+        }
+        function switchStep(btn){
+            id = btn.textContent;
+            changeActiveWindow(stepWindows.children[id-1]);
+            console.log(id);
+            lastActiveBtn.disabled = false;
+            lastActiveBtn.style.opacity = 1;
+            btn.disabled = true;
+            btn.style.opacity = 0.5;
+            lastActiveBtn = btn;
+        }
+        function addElem(){
+            var needElem = document.querySelector("#selElem").selectedIndex;
+            if(needElem == 0){
+                var div_header = document.createElement('div');
+                div_header.classList.add("p-3");
+                lastActiveWindow.appendChild(div_header)
+                var input_header = document.createElement('input');
+                input_header.type = "text";
+                input_header.placeholder = "Заголовок";
+                input_header.classList.add("text-4xl", "p-1", "rounded-lg", "w-full");
+                input_header.name = "header_elem"
+                div_header.appendChild(input_header);
+            }
+            if(needElem == 1){
+                var div_description = document.createElement('div');
+                div_description.classList.add("p-3");
+                lastActiveWindow.appendChild(div_description)
+                var textarea_description = document.createElement('textarea');
+                textarea_description.rows = 25;
+                textarea_description.placeholder = "Напишите описание"
+                textarea_description.style.resize = "none";
+                textarea_description.classList.add("block", "rounded-md", "border-2", "p-1", "w-full");
+                textarea_description.name = "description_elem";
+                div_description.appendChild(textarea_description);
+            }
+            if(needElem == 2){
+                console.log("Img was added")
+                var div_img = document.createElement('div');
+                div_img.classList.add("p-3");
+                lastActiveWindow.appendChild(div_img)
+                var ImgUploader = document.createElement('input');
+                ImgUploader.type = "file";
+                ImgUploader.accept = "image/*";
+                ImgUploader.classList.add("w-full");
+                var CourseImage = document.createElement('img');
+                CourseImage.src = "none.jpg";
+                CourseImage.name = "image_elem";
+                ImgUploader.addEventListener('change', function(e) {
+                    CourseImage.src = URL.createObjectURL(ImgUploader.files[0]);
+                });
+                
+                CourseImage.classList.add("courseimg","max-w-screen-md", "ml-auto", "mr-auto");
+                
+                div_img.appendChild(CourseImage);
+                div_img.appendChild(ImgUploader)
+
+            }
+            if(needElem == 3){
+                var div_iframe = document.createElement('div');
+                div_iframe.classList.add("p-3");
+                lastActiveWindow.appendChild(div_iframe)
+                var IframeUploader = document.createElement('input');
+                IframeUploader.type = "text";
+                IframeUploader.placeholder = "Ссылка на YouTube видео";
+                IframeUploader.classList.add("text-lg", "p-1", "rounded-lg", "w-full");
+                IframeUploader.name = "video_elem";
+                div_iframe.appendChild(IframeUploader);
+
+            }
+        }
+    </script>
+    <script>
+        const divUpload = document.querySelector("#divUpload");
+        const pStatus = document.querySelector("#pStatus");
+        const Iheader = document.querySelector("#Iheader");
+        const TADesc = document.querySelector("#TADesc");
+        const InputUploader = document.querySelector("#fileButton")
+        const pPrice = document.querySelector("#price")
+        var needCategory = document.querySelector("#category");
+        var options = document.querySelector("#category").options;
+        var postKey;
+        var images = [];
+        function loadFile() {
+            var image = document.getElementById('output');
+            image.src = URL.createObjectURL(InputUploader.files[0]);
+        };
+
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            try { 
+                firebase.auth().onAuthStateChanged(function(user) {
+
+                    if (user) {
+                        console.log("User signed in");
+                        sign.textContent = user.displayName;
+                        document.querySelector("#sendCourse").addEventListener("click", function() {
+                            var user = firebase.auth().currentUser;
+                            var file = document.getElementById('fileButton').files[0];
+                            postKey = firebase.database().ref('courses').push().key;
+                            var previewUrl;
+                            var storageRef = firebase.storage().ref('course_preview/' + file.name)
+                        var previewTask = storageRef.put(file);
+                        console.log(previewTask)
+
+                        function uploadImages(i, div_window, window_id){
+                            var img_index = i;
+                            var ImgUrl;
+                            var inpUploader = div_window.children[i].children[1];
+                            var storageRef = firebase.storage().ref('course_content/' + inpUploader.files[0].name)
+                            var imageTask = storageRef.put(inpUploader.files[0]);
+                            imageTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+                                (snapshot) => {
+                                    // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                                    var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                                    console.log('Upload is ' + progress + '% done');
+                                    switch (snapshot.state) {
+                                    case firebase.storage.TaskState.PAUSED: // or 'paused'
+                                        console.log('Upload is paused');
+                                        break;
+                                    case firebase.storage.TaskState.RUNNING: // or 'running'
+                                        console.log('Upload is running');
+                                        break;
+                                    }
+                                }, 
+                                (error) => {
+                                    switch (error.code) {
+                                    case 'storage/unauthorized':
+                                        // User doesn't have permission to access the object
+                                        break;
+                                    case 'storage/canceled':
+                                        // User canceled the upload
+                                        break;
+                                    case 'storage/unknown':
+                                        // Unknown error occurred, inspect error.serverResponse
+                                        break;
+                                    }
+                                }, 
+                                () => {
+                                    // Upload completed successfully, now we can get the download URL
+                                    imageTask.snapshot.ref.getDownloadURL().then(function(url){
+                                        imageUrl = url;
+                                        console.log(imageUrl);
+                                        firebase.database().ref('courses').child(postKey).child("content").child(window_id).push({
+                                            index: img_index,
+                                            elemValue: imageUrl,
+                                            element: "image_elem"
+                                        }); 
+                                    });
+                                }
+                            );
+                        }
+
+
+                        previewTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+                        (snapshot) => {
+                            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            console.log('Upload is ' + progress + '% done');
+                            switch (snapshot.state) {
+                            case firebase.storage.TaskState.PAUSED: // or 'paused'
+                                console.log('Upload is paused');
+                                break;
+                            case firebase.storage.TaskState.RUNNING: // or 'running'
+                                console.log('Upload is running');
+                                break;
+                            }
+                        }, 
+                        (error) => {
+                            switch (error.code) {
+                            case 'storage/unauthorized':
+                                // User doesn't have permission to access the object
+                                break;
+                            case 'storage/canceled':
+                                // User canceled the upload
+                                break;
+                            case 'storage/unknown':
+                                // Unknown error occurred, inspect error.serverResponse
+                                break;
+                            }
+                        }, 
+                        () => {
+                            // Upload completed successfully, now we can get the download URL
+                            previewTask.snapshot.ref.getDownloadURL().then(function(url){
+                                previewUrl = url;
+                                console.log(previewUrl);
+                                firebase.database().ref('courses').child(postKey).set({
+                                    preview: previewUrl,
+                                    description: TADesc.value,
+                                    header: Iheader.value,
+                                    category: options[needCategory.selectedIndex].text,
+                                    price: pPrice.value,
+                                    author: user.displayName,
+                                    status: "waitsForReply"
+                                });
+                                console.log(postKey);
+                                for(var x = 0; x < stepWindows.childElementCount; x++){
+                                    var div_window = stepWindows.children[x];
+                                    var window_id = firebase.database().ref('courses').child(postKey).child("content").push({
+                                        index: x
+                                    }).key; 
+                                    for(var i = 0; i < div_window.childElementCount; i++){
+                                        console.log(i);
+                                        var elem = div_window.children[i].children[0];
+                                        console.log(elem.name)
+                                        if(elem.name == "image_elem"){
+                                            images.push([i,div_window, window_id])
+                                        }
+                                        if(elem.name == "header_elem"){
+                                            console.log("Header has been checked")
+                                            var headerText = elem.value;
+                                            console.log(headerText);
+                                            console.log(postKey);
+                                            console.log(window_id);
+                                            firebase.database().ref('courses').child(postKey).child("content").child(window_id).push({
+                                                index: i,
+                                                elemValue: headerText,
+                                                element: "header_elem"
+                                            }); 
+                                        }
+                                        if(elem.name == "description_elem"){
+                                            console.log("Desc has been checked")
+                                            var descriptionText = elem.value;
+                                            console.log(descriptionText)
+                                            console.log(postKey)
+                                            console.log(window_id)
+                                            firebase.database().ref('courses').child(postKey).child("content").child(window_id).push({
+                                                index: i,
+                                                elemValue: descriptionText,
+                                                element: "description_elem"
+                                            });
+                                        }
+                                        if(elem.name == "video_elem"){
+                                            console.log("Video has been checked")
+                                            var videoLink = elem.value;
+                                            console.log(videoLink);
+                                            console.log(postKey);
+                                            console.log(window_id);
+                                            firebase.database().ref('courses').child(postKey).child("content").child(window_id).push({
+                                                index: i,
+                                                elemValue: videoLink,
+                                                element: "video_elem"
+                                            }); 
+                                        }
+                                        // if(elem.name == "description_elem"){
+                                            
+                                        // }
+                                    }
+                                }
+                            images.forEach(element => {
+                                uploadImages(element[0], element[1], element[2]);
+                            });
+                            
+                            });
+                        }
+                        );
+                      
+
+                                                        
+                            // divUpload.style.display = "none";
+                            // pStatus.textContent = "Заявка отправлена. Ждите подтверждения."
+                            
+                        });
+                        
+                    } else {
+                        console.log("User not signed in");
+                        // No user is signed in.
+                    }
+                });
+            } catch (e) {
+                console.error(e);
+                sign.textContent = 'Error loading the Firebase SDK, check the console.';
+            }
+        });
+        
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLEarn</title>
+    <link rel="stylesheet" href="tailwind.css">
+    <!-- update the version number as needed -->
+    <script defer src="/__/firebase/8.4.3/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <script defer src="/__/firebase/8.4.3/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.4.3/firebase-database.js"></script>
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
+    <style>
+        .description-course{
+            background-color:rgba(0, 0, 0, 0.5);
+            transition: 0.25s;
+            transform: translateY(100%);
+            padding: 0.5em;
+            opacity: 0;
+        }
+        .course:hover .description-course {
+            transform: translateY(0%);
+            opacity: 1;
+        }
+        
+    </style>
+</head>
+<body>
+    <nav class="flex items-center justify-between flex-wrap bg-gradient-to-r from-indigo-500 to-blue-400 p-6">
+        <div class="flex items-center flex-shrink-0 text-white mr-6">
+          <svg class="fill-current h-8 w-8 mr-2" width="54" height="54" viewBox="0 0 54 54" xmlns="http://www.w3.org/2000/svg"><path d="M13.5 22.1c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05zM0 38.3c1.8-7.2 6.3-10.8 13.5-10.8 10.8 0 12.15 8.1 17.55 9.45 3.6.9 6.75-.45 9.45-4.05-1.8 7.2-6.3 10.8-13.5 10.8-10.8 0-12.15-8.1-17.55-9.45-3.6-.9-6.75.45-9.45 4.05z"/></svg>
+          <span class="font-semibold text-xl tracking-tight">TLEarn</span>
+        </div>
+        <div class="block lg:hidden">
+          <button class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white">
+            <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+          </button>
+        </div>
+        <div class="w-full block flex-grow lg:flex lg:items-center lg:w-auto text-xl">
+          <div class="lg:flex-grow">
+            <a href="courses.html" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400 mr-4">
+                Курсы
+            </a>
+            <a href="#responsive-header" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400 mr-4">
+                Отзывы
+            </a>
+            <a href="sendCourse.html" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-400">
+                Создать курс
+            </a>
+          </div>
+          <div>
+            <a href="sign.html" id="sign" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-600">
+                Войти
+            </a>
+          </div>
+        </div>
+      </nav>
+      <div id="loader" wire:loading class="fixed top-20 left-0 right-0 bottom-0 w-full h-screen z-50 overflow-hidden bg-gray-700 opacity-75 flex flex-col items-center justify-center">
+        <img class="animate-spin h-20 w-20" src="images/roller.png">
+      </div>
+    <div class="content p-3 mt-3 hidden">
+        <div class="flex grid grid-cols-1 gap-4 md:grid-cols-3">
+            <div class="">
+                <img id="preview" src="none.jpg" class="w-full rounded-xl mb-4" alt="none">
+                <a href="learn.html?id=1" id="learn_link" class="hidden">
+                    <button class="w-full bg-gradient-to-r from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-800 text-white btn outline-none focus:outline-none rounded-full py-2 px-6">
+                        Открыть
+                    </button>
+                </a>
+                <div id="buyDiv" class="hidden border-4 w-full lg:w-2/3 h-40 p-3 mt-4 ml-auto mr-auto">
+                    <p id="price" class="text-4xl text-center mb-6"><b>0 ₽</b></p>
+                    <button id="buyCourse" class="w-full bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-800 text-white btn outline-none focus:outline-none rounded-full py-2 px-6">Купить</button>
+                </div>
+            </div>
+            
+            <div class="mt-4 md:mt-0 col-span-2">
+                <p id="header" class="text-2xl">Header</p>
+                <p id="description" class="text-lg">Description</p>
+            </div>
+            
+        </div>
+
+    </div>
+    <script>
+        const loader = document.querySelector("#loader");
+        const content = document.querySelector(".content");
+        const sign = document.querySelector("#sign");
+        const preview = document.querySelector("#preview");
+        const header = document.querySelector("#header");
+        const description = document.querySelector("#description");
+        const price = document.querySelector("#price");
+        const buyBtn = document.querySelector("#buyCourse");
+        const buyDiv = document.querySelector("#buyDiv");
+        const learn_link = document.querySelector("#learn_link");
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                var url_string = window.location.href; //window.location.href
+                var url = new URL(url_string);
+                const course_id = url.searchParams.get("id");
+                console.log(course_id);
+                firebase.database().ref("courses").child(course_id).once('value', snapshot => {
+                    if(snapshot.exists()){
+                        console.log("Data received");
+                        obj = snapshot.val();
+                        preview.src = obj.preview;
+                        header.textContent = obj.header;
+                        description.textContent = obj.description;
+                        price.textContent = obj.price + " ₽";
+                        loader.remove();
+                        content.style.display = "block";
+                        console.log(obj);
+                        
+                    }
+                });
+
+            firebase.auth().onAuthStateChanged(function(user) {
+
+                if (user) {
+                    console.log("User signed in");
+                    sign.textContent = user.displayName;
+                    sign.href = "profile.html";
+                    firebase.database().ref("users").child(user.displayName).child(course_id).child("status").once('value', snapshot => {
+                        console.log(snapshot.val());
+                        if(snapshot.val() != "bought"){
+                            buyDiv.classList.remove("hidden");
+                        } else {
+                            learn_link.href = "learn.html?id="+course_id;
+                            learn_link.classList.remove("hidden");
+                        }
+                    });
+                    buyBtn.addEventListener("click", function() {
+                        console.log("course has been bought")
+                        firebase.database().ref("users").child(user.displayName).child(course_id).set({
+                            status: "bought"
+                        });
+                        buyDiv.classList.add("hidden");
+                        document.location.reload();
+                    });
+                } else {
+                    console.log("User not signed in");
+                    // No user is signed in.
+                }
+            });
+            } catch (e) {
+                console.error(e);
+                sign.textContent = 'Error loading the Firebase SDK, check the console.';
+            }
+        });
+    </script>
+</body>
+</html>
+
+<script>
+    
+</script>
